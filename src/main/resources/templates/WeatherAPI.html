@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WeatherAPI</title>
+    <style>
+        h3 > img {
+            margin: 0px 0px -20px -5px;
+        }
+    </style>
+</head>
+<body>
+<h2>Clima en ${clima.ciudad}, ${clima.pais}</h2>
+<h3>
+    <img src="https://openweathermap.org/img/w/${clima.icono}.png">
+    Temperatura: ${clima.tempActual} °C
+</h3>
+<h4>Tiempo: ${clima.tiempo}</h4>
+<h4> Temperatura Máxima: ${clima.tempMax} °C</h4>
+<h4> Temperatura Mínima: ${clima.tempMin} °C</h4>
+<h4> Humedad: ${clima.humedad} %</h4>
+</body>
+</html>
