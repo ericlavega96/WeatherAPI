@@ -18,11 +18,35 @@ public class RutasSpark {
 
         get("/", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
-            String weatherJSON = WeatherAPI.getInstancia().getWeatherData(19.22,-70.53);
+            return new ModelAndView(attributes,"Opciones.html");
+        }, freeMarkerEngine);
+
+        post("/busqueda/ciudad", (request, response) -> {
+            Map<String, Object> attributes = new HashMap<>();
+            String pais = request.queryParams("pais");
+            String ciudad = request.queryParams("ciudad");
+
+            String weatherJSON = WeatherAPI.getInstancia().getWeatherData(pais,ciudad);
             WeatherAPI.getInstancia().printWeatherData(weatherJSON);
             attributes.put("clima", WeatherAPI.getInstancia().getWeatherObject(weatherJSON));
-            return new ModelAndView(attributes,"weatherAPI.html");
+            return new ModelAndView(attributes,"WeatherAPI.html");
         }, freeMarkerEngine);
+
+        post("busqueda/:lat/:lon", (request, response) -> {
+            Map<String, Object> attributes = new HashMap<>();
+            Double latitud = Double.valueOf(request.params("lat"));
+            Double longitud = Double.valueOf(request.params("lon"));
+            //String weatherJSON = WeatherAPI.getInstancia().getWeatherData(19.22,-70.53);
+            System.out.println("Latitud:" +latitud + " Longitud: " + longitud );
+
+            String weatherJSON = WeatherAPI.getInstancia().getWeatherData(latitud,longitud);
+            //WeatherAPI.getInstancia().printWeatherData(weatherJSON);
+            attributes.put("clima", WeatherAPI.getInstancia().getWeatherObject(weatherJSON));
+            return new ModelAndView(attributes,"WeatherAPI.html");
+        }, freeMarkerEngine);
+
+
+
 
     }
 }

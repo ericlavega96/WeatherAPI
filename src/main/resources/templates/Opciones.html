@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Dependencias de Jquery y Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+    <!-- Dependencias webjar de Chosen -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Opciones WeatherAPI</title>
+    <style>
+        #titulo{
+            margin:5px 0px 0px 20px;
+        }
+        .opciones, #pais-ciudad-form{
+            margin: 26px 0px 0px 10px;
+        }
+        #localizacion-form > button {
+            width: 25%;
+        }
+        .opciones > button {
+            width: 25%;
+        }
+
+
+    </style>
+</head>
+<body>
+<div id="titulo">
+    <h1>Weather API</h1>
+    <h2> Pronóstico del tiempo</h2>
+</div>
+<div class="opciones">
+    <button type="button" class="btn btn-warning btn-sm btn-block opciones" onclick="mostrarSeccion()"> Seleccionar país y ciudad </button>
+    <form id="localizacion-form" action="/busqueda/" method="post">
+        <button type="button" class="btn btn-warning btn-sm  btn-block opciones" onclick="pedirGeolocalizacion()"> Localización Actual </button>
+    </form>
+    <form name="pais" id="pais-ciudad-form" action="/busqueda/ciudad" method="post" style="display: none">
+        <select id="pais" data-placeholder="Seleccione un país" class="pais-chosen" style="width:200px;" required>
+            <option value=""></option>
+            <option value="DO"> Repúbica Dominicana </option>
+        </select>
+
+        <select name="ciudad" id="ciudad" data-placeholder="Seleccione una ciudad" class="ciudad-chosen" style="width:200px;" required>
+            <option value=""></option>
+            <option value="La Vega"> La Vega </option>
+            <option value="Santiago de los Caballeros"> Santiago de los Caballeros </option>
+            <option value="Puerto Plata"> Puerto Plata </option>
+            <option value="Santo Domingo"> Santo Domingo </option>
+        </select>
+
+        <button type="submit" class="btn btn-primary btn-sm"> Buscar <i class="fa fa-map-marker"></i></button>
+    </form>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".pais-chosen").chosen({width: '20%',no_results_text: "No se encontró el país ",allow_single_deselect: true});
+        $(".ciudad-chosen").chosen({width: '20%',no_results_text: "No se encontró la ciudad ",allow_single_deselect: true});
+
+        $(".pais-chosen").chosen().change(function () {
+            console.log("Valor seleccionado: " + $(this).val());
+            if($(this).val() == ""){
+                $(".ciudad-chosen").val($(".ciudad-chosen option:first").val());
+                $(".ciudad-chosen").trigger("chosen:updated");
+            }
+        });
+    });
+</script>
+<script>
+    function mostrarSeccion() {
+        var seccion = document.getElementById("pais-ciudad-form");
+        if (seccion.style.display === "none") {
+            seccion.style.display = "block";
+        } else {
+            seccion.style.display = "none";
+        }
+    }
+</script>
+<script>
+    function pedirGeolocalizacion() {
+        Notification.requestPermission(function(result) {
+            if (result === 'denied' || result === 'default') {
+                return;
+            }else{
+                var form = document.getElementById("localizacion-form");
+                var lat;
+                var long;
+                if(navigator.geolocation) {
+                    options = {
+                        enableHighAccuracy: true,
+                        timeout: 3000,      //30 segundos
+                        maximumAge: 36000   //1 hora
+                    }
+                }
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    console.log('Geolocation permissions granted');
+                    lat = position.coords.latitude;
+                    long = position.coords.longitude;
+                    form.action = form.action + lat +"/" +  long;
+                    form.submit();
+                });
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

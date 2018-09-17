@@ -21,7 +21,7 @@ public class WeatherAPI {
         return instancia;
     }
 
-    public String getWeatherData(String ciudad, String pais) {
+    public String getWeatherData(String pais, String ciudad) {
         String weatherAPIURL = "http://api.openweathermap.org/data/2.5/weather?q=" + ciudad + "," + pais + "&units=metric&appid=" + KEY;
         StringBuilder result = new StringBuilder();
         try {
